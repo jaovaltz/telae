@@ -1,42 +1,102 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* General Layout */
+.app-container {
+  display: flex;
+  font-family: sans-serif;
+  height: 100vh;
+}
+
+/* Toolbox */
+.toolbox {
+  width: 200px;
+  padding: 10px;
+  border-right: 2px solid #eee;
+  background-color: #f8f8f8;
+}
+
+.toolbox h3 {
+  text-align: center;
+  margin-top: 0;
+  color: #333;
+}
+
+.toolbox button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.toolbox button:hover {
+  background-color: #f0f0f0;
+  border-color: #bbb;
+}
+
+/* Grid Area */
+.grid-container {
+  flex: 1;
+  padding: 10px;
+}
+
+.react-grid-layout {
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+}
+
+.react-grid-item {
+  border: 1px solid #007bff;
+  background-color: #eaf4ff;
+  padding: 5px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #333;
+}
+
+.react-grid-item.react-grid-placeholder {
+    background: #c9e1fb;
+    opacity: 0.6;
+    transition-duration: 100ms;
+    z-index: 2;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+
+/* Code Area */
+.code-container {
+  width: 400px;
+  padding: 10px;
+  border-left: 2px solid #eee;
+  background-color: #2d2d2d;
+  color: #f1f1f1;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-container h3 {
+  margin-top: 0;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.code-container textarea {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  border: 1px solid #3c3c3c;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  white-space: pre;
+  padding: 5px;
 }
