@@ -1,36 +1,102 @@
+import { useEffect, useRef } from 'react'
+import * as THREE from 'three'
 import './App.css'
 
 function App() {
-  return (
-    <div className="app-container">
-      <div className="hello-world-wrapper">
-        <h1 className="hello-world-text">
-          <span className="letter letter-1">H</span>
-          <span className="letter letter-2">e</span>
-          <span className="letter letter-3">l</span>
-          <span className="letter letter-4">l</span>
-          <span className="letter letter-5">o</span>
-          <span className="space"> </span>
-          <span className="letter letter-6">W</span>
-          <span className="letter letter-7">o</span>
-          <span className="letter letter-8">r</span>
-          <span className="letter letter-9">l</span>
-          <span className="letter letter-10">d</span>
-          <span className="letter letter-11">!</span>
-        </h1>
-        <div className="subtitle-wrapper">
-          <p className="subtitle">Bem-vindo ao React</p>
-        </div>
-      </div>
-      <div className="particles">
-        <div className="particle particle-1"></div>
-        <div className="particle particle-2"></div>
-        <div className="particle particle-3"></div>
-        <div className="particle particle-4"></div>
-        <div className="particle particle-5"></div>
-      </div>
-    </div>
-  )
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    // Configuração da cena
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0x1a1a2e)
+
+    // Configuração da câmera
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    )
+    camera.position.z = 5
+
+    // Configuração do renderizador
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(window.devicePixelRatio)
+    containerRef.current.appendChild(renderer.domElement)
+
+    // Criar geometria da pirâmide (cone com 4 segmentos radiais = pirâmide quadrada)
+    const geometry = new THREE.ConeGeometry(2, 3, 4)
+
+    // Carregar a textura do Barack Obama
+    const textureLoader = new THREE.TextureLoader()
+    const texture = textureLoader.load(
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Official_portrait_of_Barack_Obama.jpg/250px-Official_portrait_of_Barack_Obama.jpg',
+      () => {
+        // Textura carregada com sucesso
+        renderer.render(scene, camera)
+      }
+    )
+
+    // Criar material com a textura
+    const material = new THREE.MeshStandardMaterial({
+      map: texture,
+      wireframe: false,
+      flatShading: true,
+    })
+
+    // Criar a mesh da pirâmide
+    const pyramid = new THREE.Mesh(geometry, material)
+    scene.add(pyramid)
+
+    // Adicionar luzes para iluminar a pirâmide
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    scene.add(ambientLight)
+
+    const pointLight = new THREE.PointLight(0xffffff, 1)
+    pointLight.position.set(5, 5, 5)
+    scene.add(pointLight)
+
+    const pointLight2 = new THREE.PointLight(0xffffff, 0.5)
+    pointLight2.position.set(-5, -5, 5)
+    scene.add(pointLight2)
+
+    // Função de animação
+    const animate = () => {
+      requestAnimationFrame(animate)
+
+      // Rotação da pirâmide
+      pyramid.rotation.x += 0.01
+      pyramid.rotation.y += 0.01
+
+      renderer.render(scene, camera)
+    }
+
+    animate()
+
+    // Redimensionar quando a janela mudar de tamanho
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      containerRef.current?.removeChild(renderer.domElement)
+      geometry.dispose()
+      material.dispose()
+      texture.dispose()
+      renderer.dispose()
+    }
+  }, [])
+
+  return <div ref={containerRef} className="app-container-3d" />
 }
 
 export default App
