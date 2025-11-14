@@ -63,13 +63,60 @@ function App() {
     pointLight2.position.set(-5, -5, 5)
     scene.add(pointLight2)
 
+    // Controle de rotação com mouse
+    let isDragging = false
+    let previousMousePosition = { x: 0, y: 0 }
+    let autoRotate = true
+
+    const onMouseDown = (event: MouseEvent) => {
+      isDragging = true
+      autoRotate = false
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      }
+    }
+
+    const onMouseMove = (event: MouseEvent) => {
+      if (!isDragging) return
+
+      const deltaX = event.clientX - previousMousePosition.x
+      const deltaY = event.clientY - previousMousePosition.y
+
+      // Rotacionar a pirâmide baseado no movimento do mouse
+      pyramid.rotation.y += deltaX * 0.01
+      pyramid.rotation.x += deltaY * 0.01
+
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      }
+    }
+
+    const onMouseUp = () => {
+      isDragging = false
+      // Retomar rotação automática após 1 segundo de inatividade
+      setTimeout(() => {
+        if (!isDragging) {
+          autoRotate = true
+        }
+      }, 1000)
+    }
+
+    // Adicionar event listeners
+    renderer.domElement.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+
     // Função de animação
     const animate = () => {
       requestAnimationFrame(animate)
 
-      // Rotação da pirâmide
-      pyramid.rotation.x += 0.01
-      pyramid.rotation.y += 0.01
+      // Rotação automática da pirâmide (apenas se não estiver sendo arrastada)
+      if (autoRotate) {
+        pyramid.rotation.x += 0.01
+        pyramid.rotation.y += 0.01
+      }
 
       renderer.render(scene, camera)
     }
@@ -88,6 +135,9 @@ function App() {
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize)
+      renderer.domElement.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
       containerRef.current?.removeChild(renderer.domElement)
       geometry.dispose()
       material.dispose()
